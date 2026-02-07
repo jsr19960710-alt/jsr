@@ -57,7 +57,9 @@ sc_obj <- subset(obj, subset = nFeature_RNA > limit_gene_low &
                    percent.mt < limit_mt_high)
 
 # 释放一下内存
+rm(obj,counts,meta)
 gc()
+
 
 # 归一化
 sc_obj <- NormalizeData(sc_obj, normalization.method = "LogNormalize", scale.factor = 2000)
@@ -110,7 +112,7 @@ sc_obj <- FindClusters(sc_obj, resolution = 0.5)
 p_umap <- DimPlot(sc_obj, reduction = "umap", label = TRUE) + 
   ggtitle("UMAP Clustering (Res 0.5)")
 
-print(p_umap)
+# print(p_umap)
 
 # 保存图
 save_dual_plots(p_umap, "01_Final_UMAP")
