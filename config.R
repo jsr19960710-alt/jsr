@@ -37,28 +37,29 @@ DIR <- list(
 
 # RDS保存 (含文件大小监控)
 save_data <- function(obj, filename, subdir = "temp") {
-  if (!subdir %in% names(DIR)) stop("Invalid subdir! Use: ", paste(names(DIR), collapse=", "))
-  
-  filepath <- file.path(DIR[[subdir]], filename)
-  saveRDS(obj, filepath)
-  
-  # 打印大小 (单细胞数据监控必备)
-  file_size <- format(object.size(obj), units = "Mb")
-  cat(sprintf("-> Saved: %s (%s) -> %s\n", basename(filename), file_size, subdir))
-  
-  invisible(filepath)
+#  路径
+filepath <- file.path(DIR[[subdir]], filename)
+
+#  保存
+saveRDS(obj, filepath)
+
+#  反馈 
+cat(sprintf("-> Saved: %s (%s)\n", filename, format(object.size(obj), units = "Mb")))
 }
 
-# RDS加载
+# RDS 加载
 load_data <- function(filename, subdir = "temp") {
-  filepath <- file.path(DIR[[subdir]], filename)
-  if (!file.exists(filepath)) stop("❌ File not found: ", filepath)
-  
-  obj <- readRDS(filepath)
-  cat(sprintf("-> Loaded: %s\n", basename(filename)))
-  return(obj)
-}
+# 路径
+filepath <- file.path(DIR[[subdir]], filename)
 
+# 2. 读取 (
+obj <- readRDS(filepath)
+
+# 3. 反馈
+cat(sprintf("-> Loaded: %s\n", filename))
+
+return(obj)
+}
 # 双格式绘图 (PDF + TIFF)
 save_dual_plots <- function(plot, filename, w = PLOT_STYLE$width, h = PLOT_STYLE$height) {
   # Path
