@@ -1,6 +1,6 @@
-# ==============================================================================
-# 全局配置 (Final Version)
-# ==============================================================================
+
+# 配置文件 --------------------------------------------------------------------
+
 
 # 1. 根目录设置 ----------------------------------------------------------------
 PROJECT_ROOT <- "D:/LUAD_sc_SLC7A11" 
@@ -39,10 +39,8 @@ DIR <- list(
 save_data <- function(obj, filename, subdir = "temp") {
 #  路径
 filepath <- file.path(DIR[[subdir]], filename)
-
 #  保存
 saveRDS(obj, filepath)
-
 #  反馈 
 cat(sprintf("-> Saved: %s (%s)\n", filename, format(object.size(obj), units = "Mb")))
 }
@@ -51,13 +49,10 @@ cat(sprintf("-> Saved: %s (%s)\n", filename, format(object.size(obj), units = "M
 load_data <- function(filename, subdir = "temp") {
 # 路径
 filepath <- file.path(DIR[[subdir]], filename)
-
 # 2. 读取 (
 obj <- readRDS(filepath)
-
 # 3. 反馈
 cat(sprintf("-> Loaded: %s\n", filename))
-
 return(obj)
 }
 # 双格式绘图 (PDF + TIFF)
@@ -65,17 +60,32 @@ save_dual_plots <- function(plot, filename, w = PLOT_STYLE$width, h = PLOT_STYLE
   # Path
   f_pdf <- file.path(DIR$figures, paste0(filename, ".pdf"))
   f_tif <- file.path(DIR$figures, paste0(filename, ".tiff"))
-  
   # PDF
   cairo_pdf(f_pdf, width = w, height = h)
   print(plot)
   dev.off()
-  
   # TIFF
   tiff(f_tif, width = w, height = h, units = "in", res = PLOT_STYLE$dpi, compression = "lzw")
   print(plot)
   dev.off()
 }
+
+
+# CSV 保存 (无防御逻辑版)
+save_csv <- function(data, filename, subdir = "tables") {
+  # 路径 
+  filepath <- file.path(DIR[[subdir]], paste0(filename, ".csv"))
+  # 写入文件 
+  write.csv(data, file = filepath, row.names = FALSE)
+  # 反馈
+  cat(sprintf("-> Saved CSV: %s\n", filename))
+}
+
+
+
+
+
+
 
 # 空值合并操作符
 `%||%` <- function(a, b) if (is.null(a)) b else a
