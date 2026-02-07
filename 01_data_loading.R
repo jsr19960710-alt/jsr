@@ -70,17 +70,6 @@ sc_obj <- ScaleData(sc_obj, features = VariableFeatures(sc_obj))
 # 线性降维 (PCA)
 sc_obj <- RunPCA(sc_obj, features = VariableFeatures(object = sc_obj), verbose = FALSE)
 
-# 保存
-save_data(sc_obj,"module01_seurat.rds",subdir = "temp")
-
-
-
-
-
-#
-rm(list = ls())
-gc()
-
 
 # 可视化QC -------------------------------------------------------------------
 
@@ -106,8 +95,25 @@ save_dual_plots(plot = p2, filename = "01_PCA_Loadings", w = 8, h = 6)
 save_dual_plots(plot = p4, filename = "01_PCA_Elbow", w = 6, h = 4)
 
 
+# UMAP 可视化与聚类 -------------------------------------------------------------
 
+# UMAP (非线性降维)
+sc_obj <- RunUMAP(sc_obj, dims = 1:20)
 
+# 构建细胞间的关系网
+sc_obj <- FindNeighbors(sc_obj, dims = 1:20)
 
+# 寻找聚类 (FindClusters)
+sc_obj <- FindClusters(sc_obj, resolution = 0.5)
 
+#  UMAP 图
+p_umap <- DimPlot(sc_obj, reduction = "umap", label = TRUE) + 
+  ggtitle("UMAP Clustering (Res 0.5)")
+
+print(p_umap)
+
+# 保存图
+save_dual_plots(p_umap, "01_Final_UMAP")
+
+save_data(sc_obj, "module01_seurat.rds", subdir = "temp")
 
